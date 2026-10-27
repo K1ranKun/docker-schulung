@@ -1,0 +1,28 @@
+services:
+######################## APPY-WEBSERVER ################################################################################################
+  appy-web:
+    image: appy:1.0                         # das image wird docker online nicht finden -> build wird getriggert
+    build:
+      context: .                            # pfadangabe fuer workspace
+      dockerfile: Dockerfile  # dateiname der dockerfile
+      args:                                 # uebergabe von variablen an dockerfile
+        WAR_FILE: appy.war
+    container_name: appy-web
+    restart: unless-stopped
+    environment:
+      DB_URL: jdbc:postgresql://appy-db:5432/testdb
+      DB_USERNAME: testuser
+      DB_PASSWORD: test123
+    ports:
+      - "8080:8080"
+######################## DB VON APPY-WEBSERVER ########################################################################################
+  appy-db:
+    image: postgres
+    container_name: appy-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${DB_USER:-testuser}          # variable die extern definiert wird, falls diese nicht existiert wird, wird testuser als alternative verwendet 
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-test123}   # das gleiche wie oben 
+      POSTGRES_DB: ${DB_NAME:-testdb}              # das gleiche wie oben
+    ports:
+      - "5433:5432"

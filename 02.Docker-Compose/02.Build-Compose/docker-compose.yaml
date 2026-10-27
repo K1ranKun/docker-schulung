@@ -1,0 +1,25 @@
+services:
+######################## APPX1-WEBSERVER ################################################################################################
+  appx-1-web:
+    image: appx1:1.0
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        WAR_FILE: appx-1.war
+    container_name: appx1-web
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+######################## APPX2-WEBSERVER ################################################################################################
+  appx-2-web:
+      image: appx2:1.0
+      build:
+        context: .
+        dockerfile: Dockerfile
+        args:
+          WAR_FILE: appx-2.war
+      container_name: appx2-web
+      restart: unless-stopped
+      ports:
+        - "8081:8080"

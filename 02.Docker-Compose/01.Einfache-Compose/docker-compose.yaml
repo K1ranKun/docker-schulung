@@ -1,0 +1,35 @@
+services:
+
+######################## EINFACHER WEBSERVER ########################################################################################
+  webserver:                      # identifizierung fuer docker commands (name ist variable)
+    image: nginx:alpine           # name des images, welches ext oder intern heruntergeladen/verwendet wird
+    container_name: webserver     # fester name fuer den container (bspw. fuer dns)
+    ports:                        # hier werden ports definiert, auf die der container von aussen hoert (ext-port:container-port)
+      - "8080:80"                 # EXTERNER-PORT:CONTAINER-PORT
+    restart: unless-stopped       # falls der container nicht laeuft (neustart vom host) soll er automatisch gestartet werden
+
+######################## UNSER DB MANAGER ###########################################################################################
+  db-manager:
+    image: adminer:latest
+    container_name: db-manager      
+    ports:
+      - "8081:8080"
+    restart: unless-stopped
+
+######################## UNSER POSTGRES DB ##########################################################################################
+  db:                             
+    image: postgres               
+    container_name: database      
+    restart: unless-stopped
+    environment:                  # hierbei werden umgebungsvariablen an den container mitgegeben
+      POSTGRES_USER: testuser
+      POSTGRES_PASSWORD: test123
+      POSTGRES_DB: appx
+    volumes:                     # hierbei werden verknuepfungen zwischen host und container definiert (fuer persistierung von daten)
+      - ./data/postgres:/var/lib/postgresql/data
+      - home-data:/home
+    ports:                        
+      - "5433:5432"
+
+volumes:
+  home-data:
